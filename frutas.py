@@ -30,7 +30,7 @@ nova_fruta = pd.DataFrame([[1, 1, 1, 0]], columns=caracteristicas)
 resultado = floresta.predict(nova_fruta)
 
 print("--- PREVISÃO ---")
-print(f"Previsão para [1, 1, 1, 1]: {resultado[0]}\n")
+print(f"Previsão para [1, 1, 1, 0]: {resultado[0]}\n")
 
 # 6. Exibir a Importância das Características
 print("--- IMPORTÂNCIA DAS CARACTERÍSTICAS ---")
