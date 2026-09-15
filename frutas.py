@@ -1,46 +1,48 @@
 import pandas as pd
+# 1. Troca a importação do tree pelo ensemble
+from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt
 from sklearn import tree
 
-# 1. Carregar os dados
+# 2. Carregar os dados
 df = pd.read_excel("data/dados_frutas.xlsx")
 
-# 2. Definir o alvo e as características
+# 3. Definir o alvo e as características
 y = df["Fruta"]
-caracteristicas = ["Arredondada", "Suculenta", "Vermelha", "Doce"]
+caracteristicas = ["Arredondada", "Suculenta", "Doce", "Vermelha"]
 X = df[caracteristicas]
 
-# 3. Criar e treinar o modelo com a base COMPLETA
-arvore = tree.DecisionTreeClassifier(random_state=42)
-arvore.fit(X, y)
+# 4. Criar e treinar o modelo Random Forest
+# n_estimators=100 cria uma floresta com 100 árvores de decisão
+floresta = RandomForestClassifier(n_estimators=100, random_state=42)
+floresta.fit(X, y)
 
-# 4. Avaliar o modelo nos próprios dados de treino
-previsoes = arvore.predict(X)
+# 5. Avaliar o modelo
+previsoes = floresta.predict(X)
 acertos = (y == previsoes).sum()
 total = len(y)
 
-print("--- RESULTADOS DO MODELO ---")
+print("--- RESULTADOS DO RANDOM FOREST ---")
 print(f"Total de frutas no dataset: {total}")
 print(f"Acertos no treinamento: {acertos} / {total} ({(acertos/total)*100:.2f}%)\n")
 
-# 5. Fazer uma previsão para uma fruta inédita/customizada
+# 6. Fazer uma previsão para uma nova combinação
 # Exemplo: Arredondada(1), Suculenta(1), Doce(1), Vermelha(1)
-novas_frutas = [
-    [0, 0, 0, 0],
-    [1, 1, 1, 1],
-    [1, 0, 1, 0]
-]
-resultado = arvore.predict(novas_frutas)
+nova_fruta = [[1, 1, 1, 1]]
+resultado = floresta.predict(nova_fruta)
 
-for i, fruta_prevista in enumerate(resultado, start=1):
-    print(f"Fruta {i}: {fruta_prevista}")
+print(f"Previsão para [1, 1, 1, 1]: {resultado[0]}")
 
-# 6. Visualizar a Árvore de Decisão gerada
-plt.figure(figsize=(14, 8))
+primeira_arvore = floresta.estimators_[20]
+
+# Desenha a árvore escolhida
+plt.figure(figsize=(12, 8))
 tree.plot_tree(
-    arvore, 
-    feature_names=caracteristicas, 
-    class_names=arvore.classes_, 
-    filled=True, 
+    primeira_arvore,
+    feature_names=caracteristicas,
+    class_names=floresta.classes_,
+    filled=True,
     rounded=True
 )
+plt.title("Primeira Árvore do Random Forest (Índice 0)")
+plt.show()
