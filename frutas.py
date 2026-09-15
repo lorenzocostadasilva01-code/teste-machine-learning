@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn import tree
 
 # 1. Carregar os dados
@@ -9,14 +10,26 @@ y = df["Fruta"]
 caracteristicas = ["Arredondada", "Suculenta", "Doce", "Vermelha"]
 X = df[caracteristicas]
 
+df.info()
+
 # 4. Criar e treinar o modelo
-# random_state é usado para garantir que os resultados sejam reproduzíveis (tipo uma seed do minecraft)
 arvore = tree.DecisionTreeClassifier(random_state=42)
 arvore.fit(X, y)
 
 # 5. Fazer a previsão
-# Exemplo: Arredondada(1), Suculenta(0), Doce(1), Vermelha(1)
+# Exemplo: Arredondada(0), Suculenta(0), Doce(0), Vermelha(0)
 nova_fruta = [[0, 0, 0, 0]]
 resultado = arvore.predict(nova_fruta)
 
 print("A fruta prevista é:", resultado[0])
+
+# 6. Visualizar a árvore de decisão
+plt.figure(figsize=(12, 8))
+tree.plot_tree(
+    arvore, 
+    feature_names=caracteristicas, 
+    class_names=arvore.classes_, 
+    filled=True, 
+    rounded=True
+)
+plt.show()
